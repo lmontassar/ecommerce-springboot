@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -41,7 +42,9 @@ public class ProductService {
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
-
+    public Product createProduct(Product product) {
+        return productRepository.save(product);
+    }
     public Product createProduct(Product product, MultipartFile file) throws IOException {
         if (file != null && !file.isEmpty()) {
             String filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();

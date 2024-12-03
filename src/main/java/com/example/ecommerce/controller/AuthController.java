@@ -4,6 +4,7 @@ import com.example.ecommerce.model.User;
 import com.example.ecommerce.security.JwtTokenProvider;
 import com.example.ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,19 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+
+    @PostMapping("/admin-login")
+    public ResponseEntity<?> authenticateAdmin(@RequestBody User loginUser) {
+        if ("admin".equals(loginUser.getUsername()) && "admin".equals(loginUser.getPassword())) {
+            String token = tokenProvider.generateToken("admin");
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("role", "ADMIN");
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid admin credentials");
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
