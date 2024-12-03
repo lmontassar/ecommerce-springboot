@@ -61,4 +61,22 @@ public class CartService {
         cartItem.setQuantity(cartItem.getQuantity() + quantity);
         return cartRepository.save(cart);
     }
+    
+    public Cart updateCartItem(User user, Long productId, Integer quantity) {
+        Cart cart = getCartForUser(user);
+        CartItem cartItem = cart.getItems().stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Product not found in cart"));
+
+        if (quantity <= 0) {
+            cart.getItems().remove(cartItem);
+        } else {
+            cartItem.setQuantity(quantity);
+        }
+
+        return cartRepository.save(cart);
+    }
+
+
 }
